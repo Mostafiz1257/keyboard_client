@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetProductQuery } from '@/redux/api/baseApi';
+import { useDispatch } from 'react-redux';
+
 import { CiStar } from 'react-icons/ci';
 import { Button } from '@/components/ui/button';
+import { addToCart } from '@/redux/api/slice/cartSlice';
 
 const DetailsProduct = () => {
   const { id } = useParams();
-  const { data, isLoading } = useGetProductQuery(id) ;
-const product = data?.product
+  const { data, isLoading } = useGetProductQuery(id);
+  const dispatch = useDispatch();
+  const product = data?.product;
   const [availableQuantity, setAvailableQuantity] = useState(1);
 
   if (isLoading) return <p>Loading...</p>;
@@ -16,7 +20,8 @@ const product = data?.product
 
   const handleAddToCart = () => {
     if (quantity > 0) {
-      // Add product to cart logic
+      dispatch(addToCart(product));
+console.log(product);
     }
   };
 
@@ -40,7 +45,7 @@ const product = data?.product
             min="1"
             max={quantity}
             value={availableQuantity}
-            onChange={(e) => setAvailableQuantity(e.target.value)}
+            onChange={(e) => setAvailableQuantity(parseInt(e.target.value))}
             className="border rounded-md p-2 w-20 mr-4"
           />
           <Button onClick={handleAddToCart} disabled={quantity <= 0}>

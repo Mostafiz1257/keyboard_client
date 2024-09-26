@@ -1,11 +1,14 @@
 
+import Checkout from "@/checkout/Checkout";
 import DetailsProduct from "@/component/Product/DeatilsProduct";
 import Order from "@/component/Product/Order";
+import SuccessPage from "@/component/SuccessPage";
 import Main from "@/layout/Main";
 import About from "@/pages/About/About";
-import Contract from "@/pages/Contract/Contract";
+import Contact from "@/pages/Contract/Contact";
 import Dashboard from "@/pages/Dashboard/Dashboard";
 import Home from "@/pages/Home/Home";
+import Card from "@/pages/itemCard/Card";
 import Products from "@/pages/Products/Products";
 import {
     createBrowserRouter,
@@ -40,11 +43,20 @@ export const router = createBrowserRouter([
             },
             {
                 path:'/contact-us',
-                element:<Contract></Contract>
+                element:<Contact></Contact>
             },
             {
                 path:'/dashboard',
                 element:<Dashboard></Dashboard>
+            },{
+                path:'/cart',
+                element:<Card/>
+            },{
+                path:'/checkout',
+                element:<Checkout/>
+            },{
+                path:'/success',
+                element:<SuccessPage/>
             }
         ],
         

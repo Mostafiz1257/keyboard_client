@@ -1,98 +1,143 @@
-import React, { useState } from "react";
+import { useState } from 'react';
+import { FaSearch, FaDollarSign, FaTimes, FaSortAmountUp, FaSortAmountDown } from 'react-icons/fa';
 import ProductCard from "@/component/ProductCard";
 import { useGetAllProductsQuery } from "@/redux/api/baseApi";
+import Loading from "@/component/Loading";
+import { Product } from "@/types";
 
 const Products = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const { data, isLoading } = useGetAllProductsQuery({});
+  const products: Product[] = data?.products || []; // Ensure products is always an array
 
-  const { data, isLoading } = useGetAllProductsQuery({
-    searchTerm,
-    minPrice: minPrice ? Number(minPrice) : undefined,
-    maxPrice: maxPrice ? Number(maxPrice) : undefined,
-    sortBy,
+  // State for search term, price range, sort option, and pagination
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [minPrice, setMinPrice] = useState<string>('');
+  const [maxPrice, setMaxPrice] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'lowToHigh' | 'highToLow'>('lowToHigh'); // Specify sort options
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 8; // Number of products per page
+
+  // Filter products based on search term and price range
+  const filteredProducts = products.filter(product => {
+    const matchesName = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesBrand = product.brand.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesPrice = (!minPrice || product.price >= Number(minPrice)) && (!maxPrice || product.price <= Number(maxPrice));
+    return (matchesName || matchesBrand) && matchesPrice;
   });
 
-  const products = data?.result;
+  // Sort products based on selected order
+  const sortedProducts = filteredProducts.sort((a, b) => {
+    if (sortOrder === 'lowToHigh') return a.price - b.price;
+    return b.price - a.price;
+  });
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-  };
+  // Get current products for the page
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  const handleMinPriceChange = (e) => {
-    setMinPrice(e.target.value);
-  };
+  // Calculate total pages
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
 
-  const handleMaxPriceChange = (e) => {
-    setMaxPrice(e.target.value);
-  };
-
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
-  };
-
-  const handleClearFilters = () => {
-    setSearchTerm("");
-    setMinPrice("");
-    setMaxPrice("");
-    setSortBy("");
+  // Clear filters
+  const clearFilters = () => {
+    setSearchTerm('');
+    setMinPrice('');
+    setMaxPrice('');
+    setSortOrder('lowToHigh');
+    setCurrentPage(1); // Reset to the first page
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="bg-white p-6 rounded-lg shadow mb-6">
-        <h2 className="text-2xl font-bold mb-4">Search and Filter Products</h2>
-        <div className="flex flex-col lg:flex-row lg:items-end lg:space-x-4 space-y-4 lg:space-y-0">
+    <div className="container mx-auto md:px-4 py-12">
+      {/* Search and Filter Section */}
+      <div className="mb-6 flex flex-col sm:flex-row items-center justify-between">
+        <div className="flex items-center mb-4 sm:mb-0">
+          <FaSearch className="text-gray-400 mr-2" />
           <input
             type="text"
             placeholder="Search by name or brand"
             value={searchTerm}
-            onChange={handleSearch}
-            className="w-full lg:w-auto p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border rounded-l p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
-          <div className="flex space-x-4">
-            <input
-              type="number"
-              placeholder="Min Price"
-              value={minPrice}
-              onChange={handleMinPriceChange}
-              className="w-full lg:w-auto p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <input
-              type="number"
-              placeholder="Max Price"
-              value={maxPrice}
-              onChange={handleMaxPriceChange}
-              className="w-full lg:w-auto p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+        </div>
+
+        <div className="flex items-center space-x-2 mb-4 sm:mb-0">
+          <FaDollarSign className="text-gray-400" />
+          <input
+            type="number"
+            placeholder="Min Price"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="border rounded-l p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <input
+            type="number"
+            placeholder="Max Price"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="border rounded-l p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div className="flex items-center mb-4 sm:mb-0">
           <select
-            value={sortBy}
-            onChange={handleSortChange}
-            className="w-full lg:w-auto p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value as 'lowToHigh' | 'highToLow')} // Cast value to expected type
+            className="border rounded p-2 mr-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="">Sort By</option>
             <option value="lowToHigh">Price: Low to High</option>
             <option value="highToLow">Price: High to Low</option>
           </select>
-          <button
-            onClick={handleClearFilters}
-            className="w-full lg:w-auto p-3 border border-gray-300 rounded bg-red-500 text-white focus:outline-none focus:ring-2 focus:ring-red-500"
-          >
-            Clear Filters
-          </button>
+          {sortOrder === 'lowToHigh' ? <FaSortAmountUp className="text-gray-400" /> : <FaSortAmountDown className="text-gray-400" />}
         </div>
+
+        <button
+          onClick={clearFilters}
+          className="bg-red-500 text-white rounded p-2 flex items-center hover:bg-red-600 transition-colors"
+        >
+          <FaTimes className="mr-1" /> Clear Filters
+        </button>
       </div>
+
       {isLoading ? (
-        <div>Loading...</div>
+        <Loading />
       ) : (
-        <div className="grid lg:grid-cols-6 gap-3 mt-4">
-          {products?.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-auto">
+            {currentProducts.length > 0 ? (
+              currentProducts.map((product: Product) => (
+                <ProductCard key={product._id} product={product} />
+              ))
+            ) : (
+              <p className="text-center text-gray-500">No products found.</p> // Display message when no products match
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 border rounded-l ${currentPage === 1 ? 'bg-gray-300' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
+            >
+              Prev
+            </button>
+
+            <span className="px-4 py-2 flex items-center">
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 border rounded-r ${currentPage === totalPages ? 'bg-gray-300' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
+            >
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );

@@ -1,52 +1,60 @@
-// Need to use the React-specific entry point to import createApi
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Define a service using a base URL and expected endpoints
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api" }),
-  tagTypes: ["products"],
+  baseQuery: fetchBaseQuery({ baseUrl: "https://mechanicalkeyboardserverside.vercel.app/api" }),
+  tagTypes: ["products"], 
   endpoints: (builder) => ({
+  
     getAllProducts: builder.query({
-      query: ({ searchTerm, minPrice, maxPrice, sortBy }) => ({
-        url: "/products",
-        params: { searchTerm, minPrice, maxPrice, sortBy },
-      }),
+      query: () => 'products',
       providesTags: ["products"],
     }),
+    
+    
     getProduct: builder.query({
       query: (id) => `/products/${id}`,
+      providesTags: ["products"],
     }),
 
+    
     addProducts: builder.mutation({
       query: (product) => ({
         url: "/products",
         method: "POST",
         body: product,
       }),
-      invalidatesTags: ["products"],
+      invalidatesTags: ["products"], 
     }),
+
+  
     updateProduct: builder.mutation({
       query: ({ id, updateData }) => ({
         url: `/products/${id}`,
         method: "PUT",
         body: updateData,
       }),
-      invalidatesTags: ["products"],
+      invalidatesTags: ["products"], 
     }),
+
+   
     deleteProduct: builder.mutation({
       query: (id) => ({
         url: `/products/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["products"],
+      invalidatesTags: ["products"], 
     }),
-    searchAndFilterProducts: builder.mutation({
-      query: ({ searchQuery, filters }) => ({
-        url: "/products/search",
-        method: "POST",
-        body: { searchQuery, filters },
+
+ 
+    decreaseProductQuantity: builder.mutation({
+      query: ({ id, quantity }) => ({
+        url: `/products/${id}`,
+        method: "PATCH",
+        body:  {quantity} ,
       }),
+      invalidatesTags: ["products"], 
     }),
   }),
 });
@@ -57,5 +65,5 @@ export const {
   useDeleteProductMutation,
   useUpdateProductMutation,
   useGetAllProductsQuery,
-  useSearchAndFilterProductsMutation
+  useDecreaseProductQuantityMutation,
 } = baseApi;

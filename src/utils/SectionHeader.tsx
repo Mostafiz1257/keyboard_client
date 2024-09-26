@@ -1,18 +1,25 @@
+type Head = {
+  headTag: string;
+  underTag: string;
+};
 
-type head={
-    headTag:string,
-    underTag:string
-}
-const SectionHeader = ({headTag,underTag}:head) => {
+const SectionHeader = ({ headTag, underTag }: Head) => {
   return (
-    <div className=" flex justify-center items-center text-center">
+    <div className="my-8 text-center">
+      {/* Header */}
+      <h1 className="text-4xl font-bold text-black tracking-wide mb-2 text-center">
+        {headTag}
+      </h1>
+      
+      {/* Subtext */}
+      <p className="text-lg text-gray-500 text-center">
+        {underTag}
+      </p>
 
-    <div className="my-10">
-      <h1 className="text-3xl font-bold text-pink-800">{headTag}</h1>
-      <p className=" font-bold underline text-teal-800">{underTag}</p>
+      {/* Underline */}
+      <div className="mt-4 mx-auto w-16 border-b-4 border-yellow-400"></div>
     </div>
-    </div>
-  )
-}
+  );
+};
 
-export default SectionHeader
+export default SectionHeader;
