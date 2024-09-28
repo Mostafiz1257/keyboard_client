@@ -10,33 +10,7 @@ import WhyUs from "@/component/Home/WhyUs";
 import SectionHeader from "@/utils/SectionHeader";
 
 const Home = () => {
-  const accordionItems = [
-    {
-      title: "What is a mechanical keyboard?",
-      content:
-        "A mechanical keyboard uses individual mechanical switches for each key, providing superior tactile feedback compared to other types of keyboards.",
-    },
-    {
-      title: "What are the benefits of mechanical keyboards?",
-      content:
-        "Mechanical keyboards offer a more durable build, better typing experience, customizable keys, and often faster response times.",
-    },
-    {
-      title: "Are mechanical keyboards louder?",
-      content:
-        "Yes, mechanical keyboards can be louder than membrane keyboards, but many switch types offer quieter options like Cherry MX Silent or Gateron Silent switches.",
-    },
-    {
-      title: "What are the benefits of mechanical keyboards?",
-      content:
-        "Mechanical keyboards offer a more durable build, better typing experience, customizable keys, and often faster response times.",
-    },
-    {
-      title: "Are mechanical keyboards louder?",
-      content:
-        "Yes, mechanical keyboards can be louder than membrane keyboards, but many switch types offer quieter options like Cherry MX Silent or Gateron Silent switches.",
-    },
-  ];
+  
   const targetDate = new Date("2024-12-31T23:59:59");
   return (
     <>
@@ -52,7 +26,7 @@ const Home = () => {
           headTag='F&Q'
           underTag='Explore our best-selling and take our services'
         />
-        <Accordion  items={accordionItems}/>
+        <Accordion />
         <Review></Review>
       </div>
     </>

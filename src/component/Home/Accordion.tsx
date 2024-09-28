@@ -1,9 +1,16 @@
 import { useState, useRef } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
-const AccordionItem = ({ title, content }) => {
+// Define the type for each accordion item
+type AccordionItemType = {
+  title: string;
+  content: string;
+};
+
+// Accordion Item Component
+const AccordionItem = ({ title, content }: AccordionItemType) => {
   const [isOpen, setIsOpen] = useState(false);
-  const contentRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>(null); // Proper typing for the ref
 
   const toggleAccordion = () => {
     setIsOpen((prev) => !prev);
@@ -35,10 +42,44 @@ const AccordionItem = ({ title, content }) => {
   );
 };
 
-const Accordion = ({ items }) => {
+// Main Accordion Component with internal accordionItems
+const Accordion = () => {
+  // Example accordion items, kept inside the Accordion component itself
+  const accordionItems: AccordionItemType[] = [
+    {
+      title: "What are the benefits of mechanical keyboards?",
+      content:
+        "Mechanical keyboards offer a more durable build, better typing experience, customizable keys, and often faster response times.",
+    },
+    {
+      title: "What is a mechanical keyboard?",
+      content:
+        "A mechanical keyboard uses individual mechanical switches for each key, providing superior tactile feedback compared to other types of keyboards.",
+    },
+    {
+      title: "What are the benefits of mechanical keyboards?",
+      content:
+        "Mechanical keyboards offer a more durable build, better typing experience, customizable keys, and often faster response times.",
+    },
+    {
+      title: "Are mechanical keyboards louder?",
+      content:
+        "Yes, mechanical keyboards can be louder than membrane keyboards, but many switch types offer quieter options like Cherry MX Silent or Gateron Silent switches.",
+    },
+    {
+      title: "What are the benefits of mechanical keyboards?",
+      content:
+        "Mechanical keyboards offer a more durable build, better typing experience, customizable keys, and often faster response times.",
+    },
+  ];
+
   return (
-    <div className="bg-white shadow-md rounded-lg border border-gray-200 overflow-hidden">
-      {items.map((item, index) => (
+    <div
+      data-aos="fade-up"
+      data-aos-duration="3000"
+      className="bg-white shadow-md rounded-lg border border-gray-200 overflow-hidden"
+    >
+      {accordionItems.map((item, index) => (
         <AccordionItem key={index} title={item.title} content={item.content} />
       ))}
     </div>

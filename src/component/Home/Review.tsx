@@ -4,8 +4,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SectionHeader from "@/utils/SectionHeader";
 
-const ReviewCarousel = () => {
-  const reviews = [
+// Define the type for a single review
+interface Review {
+  image: string;
+  customerImage: string;
+  customerName: string;
+  keyboardExperience: string;
+  reviewText: string;
+  rating: number;
+}
+
+const ReviewCarousel: React.FC = () => {
+  const reviews: Review[] = [
     {
       image: "https://images-platform.99static.com//jBKTlrLR96nGVFVxty13IKgf8p8=/131x22:832x723/fit-in/500x500/99designs-contests-attachments/124/124235/attachment_124235683",
       customerImage: "https://images.squarespace-cdn.com/content/656f4e4dababbd7c042c4946/1706750781148-ZC9BZUC4HG8ETZ9AEU63/how-to-stop-being-a-people-pleaser-1_1.jpg?content-type=image%2Fjpeg",
@@ -40,7 +50,7 @@ const ReviewCarousel = () => {
     },
   ];
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => {
       const starValue = index + 1;
       if (starValue <= rating) {
@@ -85,12 +95,12 @@ const ReviewCarousel = () => {
       <SectionHeader
         headTag="What Our Clients Say"
         underTag="Their reviews make us more reliable"
-        headerClass="text-yellow-500 text-center"
-        subHeaderClass="text-gray-600 text-center mb-10"
       />
       <Slider {...settings} className="max-w-6xl mx-auto px-8">
         {reviews.map((review, index) => (
           <div
+            data-aos="fade-up"
+            data-aos-duration="2000"
             key={index}
             className="bg-white rounded-lg shadow-lg p-6 mx-4 text-center transition-transform duration-300 hover:scale-105"
             style={{ width: '350px' }} // Adjust the width as needed

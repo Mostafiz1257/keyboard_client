@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { useDeleteProductMutation, useGetAllProductsQuery } from "@/redux/api/baseApi";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { GetProductsResponse, Product } from "@/types";
+import {  Product } from "@/types";
 import AddProductModal from "./AddProductModal";
 import UpdateProductModal from "./UpdateProductModal";
 import DeleteProductModal from "./DeleteProductModal";
 import Loading from "@/component/Loading";
 
 const Dashboard = () => {
-  const { data } = useGetAllProductsQuery<GetProductsResponse>({});
-  console.log(data);
+  const { data } = useGetAllProductsQuery({});
   const [deleteProduct] = useDeleteProductMutation();
   const products: Product[] = data?.products || [];
   
@@ -33,7 +32,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6">
+    <div  className="p-6">
       <h1 className="text-2xl font-bold mb-6 text-yellow-400">Product Dashboard</h1>
 
       <button
@@ -44,7 +43,8 @@ const Dashboard = () => {
       </button>
 
       {products?.length ? (
-        <table className="min-w-full bg-white shadow-md rounded-lg">
+        <table  data-aos="fade-up"
+        data-aos-duration="2000" className="min-w-full bg-white shadow-md rounded-lg">
           <thead>
             <tr className="bg-black text-yellow-400">
               <th className="py-3 px-6 text-left">Product Name</th>
@@ -78,11 +78,11 @@ const Dashboard = () => {
           </tbody>
         </table>
       ) : (
-        // <p className="text-3xl font-bold text-yellow-400 text-center">No products available</p>
+        
         <Loading/>
       )}
 
-      {/* Modals */}
+     
       {isAddModalOpen && <AddProductModal isOpen={isAddModalOpen} toggleModal={toggleAddModal} />}
       {isUpdateModalOpen && selectedProduct && (
         <UpdateProductModal

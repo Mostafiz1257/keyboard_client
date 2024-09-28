@@ -16,7 +16,7 @@ const SuccessPage = () => {
       </p>
 
       {/* Go to Homepage Button */}
-      <Link to="/" className="px-6 py-3 bg-yellow-600 text-white font-semibold rounded-full hover:bg-green-600 hover:text-white transition duration-300">
+      <Link to="/" className="px-6 py-3 bg-green-600 text-white font-semibold rounded-full hover:bg-yellow-600 hover:text-white transition duration-300">
         Go to Homepage
       </Link>
     </div>

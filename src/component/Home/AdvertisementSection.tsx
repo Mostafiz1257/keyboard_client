@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 
 const AdvertisementSection = () => {
   return (
-    <section className="relative py-16 bg-gray-900 text-yellow-400">
+    <section data-aos="fade-up"
+    data-aos-duration="2000" className="relative py-16 bg-gray-900 text-yellow-400">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img

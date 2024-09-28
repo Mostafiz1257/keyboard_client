@@ -9,7 +9,11 @@ export interface Product {
     description: string;
     image: string;
   }
-  
+  export interface RootState {
+    cart: {
+      items: Product[];
+    };
+  }
 
   export interface GetProductsResponse {
     products: Product[];

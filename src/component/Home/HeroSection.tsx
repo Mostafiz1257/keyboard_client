@@ -44,7 +44,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative w-full h-[600px]">
+    <div  className="relative w-full h-[600px]">
       <div className="overflow-hidden shadow-lg">
         <div className="flex transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
@@ -57,13 +57,16 @@ const HeroSection = () => {
                   alt="Keyboard"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black flex flex-col justify-center items-center text-center px-4">
-                  <h1 className="text-white text-5xl font-extrabold mb-4 drop-shadow-lg">
+                  <h1 data-aos="fade-up"
+     data-aos-duration="3000" className="text-white text-5xl font-extrabold mb-4 drop-shadow-lg">
                     {slider.title}
                   </h1>
-                  <p className="text-gray-200 text-lg mb-6 drop-shadow-md max-w-2xl">
+                  <p data-aos="fade-up"
+     data-aos-duration="3000" className="text-gray-200 text-lg mb-6 drop-shadow-md max-w-2xl">
                     {slider.description}
                   </p>
-                  <button className="px-8 py-4 bg-yellow-500 text-black font-semibold rounded-full shadow-lg hover:bg-yellow-600 transition-transform transform hover:scale-105 duration-300">
+                  <button 
+   className="px-8 py-4 bg-yellow-500 text-black font-semibold rounded-full shadow-lg hover:bg-yellow-600 transition-transform transform hover:scale-105 duration-300">
                     Explore Now
                   </button>
                 </div>

@@ -21,14 +21,13 @@ const WhyUs = () => {
   ];
 
   return (
-    <section className="py-16">
+    <section data-aos="fade-up"
+    data-aos-duration="2000" className="py-16">
       <div className="container mx-auto px-6">
         {/* Section Header */}
         <SectionHeader
           headTag="Why Choose Us"
           underTag="Discover the benefits of partnering with us"
-          headerClass="text-yellow-400 text-center"
-          subHeaderClass="text-gray-600 text-center mb-12"
         />
 
         {/* Reason Cards */}
@@ -37,7 +36,7 @@ const WhyUs = () => {
             <div key={index} className="w-full sm:w-1/2 lg:w-1/3 px-4 mb-8">
               <div className="bg-white hover:bg-gray-100 transition transform hover:-translate-y-2 duration-300 rounded-lg shadow-lg p-6 text-center">
                 {/* Icon */}
-                <div className="mb-4">
+                <div className="mb-4 ">
                   {reason.icon}
                 </div>
                 {/* Title */}

@@ -11,14 +11,15 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
-  const handleChange = (e) => {
+  // Correct type for event `e`
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -133,7 +134,7 @@ const Contact = () => {
                 value={formData.message}
                 onChange={handleChange}
                 className="w-full border rounded-md p-2"
-                rows="4"
+                rows={4} // Corrected the type to number
                 required
               />
             </div>

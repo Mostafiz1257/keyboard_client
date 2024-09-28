@@ -4,13 +4,15 @@ import axios from "axios";
 import { Product } from "@/types";
 import {  toast } from 'sonner'
 
+
+
 interface AddProductModalProps {
   isOpen: boolean;
   toggleModal: () => void;
 }
 
 const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, toggleModal }) => {
-  const [productData, setProductData] = useState<Omit<Product, "id">>({
+  const [productData, setProductData] = useState<Omit<Product, "_id">>({
     name: "",
     brand: "",
     price: 0,
@@ -60,6 +62,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, toggleModal }
     try {
       await addProduct(productData as Product);
      toast.success("Product added successfully")
+     console.log("product data",productData);
       toggleModal();
     } catch (error) {
       console.error("Error adding product:", error);

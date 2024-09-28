@@ -1,4 +1,4 @@
-import React from 'react';
+
 import SectionHeader from '@/utils/SectionHeader';
 
 const NestedImageGallery = () => {
@@ -20,8 +20,8 @@ const NestedImageGallery = () => {
       <SectionHeader
         headTag="Top Brands"
         underTag="Discover the luxury and elegance of our top brands"
-        headerClass="text-gray-800 text-3xl font-bold mb-4"
-        subHeaderClass="text-gray-500 text-lg"
+      
+       
       />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto px-4">
         {images.map((src, index) => (

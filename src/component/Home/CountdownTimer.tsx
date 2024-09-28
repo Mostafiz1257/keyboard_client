@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Helper function to format time
-const formatTime = (time) => (time < 10 ? `0${time}` : time);
+const formatTime = (time: number) => (time < 10 ? `0${time}` : time);
 
-const CountdownTimer = ({ targetDate }) => {
+// Define the type for the props
+type CountdownTimerProps = {
+  targetDate: Date; // Expecting targetDate to be a Date object
+};
+
+const CountdownTimer: React.FC<CountdownTimerProps> = ({ targetDate }) => {
   const calculateTimeLeft = () => {
     const now = new Date();
-    const timeLeft = targetDate - now;
+    const timeLeft = targetDate.getTime() - now.getTime(); // Get time in milliseconds
 
     if (timeLeft <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -20,7 +25,7 @@ const CountdownTimer = ({ targetDate }) => {
     return { days, hours, minutes, seconds };
   };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number }>(calculateTimeLeft());
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -31,8 +36,7 @@ const CountdownTimer = ({ targetDate }) => {
   }, [targetDate]);
 
   return (
-    <div className="bg-black text-yellow-500 px-6 py-12  shadow-lg text-center">
-      {/* <h2 className="text-2xl font-bold mb-4">Time Left:</h2> */}
+    <div className="bg-black text-yellow-500 px-6 py-12 shadow-lg text-center">
       <div className="flex justify-center space-x-4">
         <div className="bg-yellow-500 text-black p-4 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold">{formatTime(timeLeft.days)}</h3>

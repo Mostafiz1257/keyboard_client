@@ -29,7 +29,8 @@ const TopBrand = () => {
   ];
 
   return (
-    <div className="py-16 bg-gray-100 text-gray-800">
+    <div data-aos="fade-up"
+    data-aos-duration="2000" className="py-16 bg-gray-100 text-gray-800">
       {/* Section Header */}
       <SectionHeader
         headTag="Top Brands"

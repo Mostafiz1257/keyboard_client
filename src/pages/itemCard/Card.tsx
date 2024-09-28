@@ -1,24 +1,26 @@
-// src/components/Card.tsx
-
 import { useDispatch, useSelector } from 'react-redux';
 import { increaseQuantity, decreaseQuantity, removeFromCart } from '@/redux/api/slice/cartSlice';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { RootState } from '@/redux/store';
+
 
 
 const Card = () => {
-  const cart = useSelector(state => state?.cart?.items);
+  // Type the cart as an array of CartItem objects
+  const cart = useSelector((state: RootState) => state?.cart?.items);
   const dispatch = useDispatch();
-console.log("card",cart);
-  // Calculate total price
-  const totalPrice = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  console.log('card', cart);
+
+  // Calculate total price with correct types
+  const totalPrice = cart.reduce((acc: number, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 bg-white rounded-lg shadow-md">
+    <div className="max-w-4xl mt-12 mx-auto p-4 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Your Cart</h2>
 
       {cart.length === 0 ? (
-        <p className='text-3xl font-bold items-center text-yellow-400'>Your cart is empty.</p>
+        <p className="text-3xl font-bold items-center text-yellow-400">Your cart is empty.</p>
       ) : (
         <div>
           {cart.map((item) => (
@@ -62,7 +64,7 @@ console.log("card",cart);
           <div className="mt-4 text-right">
             <p className="text-xl font-semibold">Total: ${totalPrice.toFixed(2)}</p>
             <Link to="/checkout">
-              <Button className="mt-4" disabled={cart.length === 0}>
+              <Button className="mt-4 rounded-full" disabled={cart.length === 0}>
                 Proceed to Checkout
               </Button>
             </Link>

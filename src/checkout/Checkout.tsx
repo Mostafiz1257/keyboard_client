@@ -3,24 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Button } from '@/components/ui/button';
 import { useDecreaseProductQuantityMutation } from '@/redux/api/baseApi';
-import { loadStripe } from "@stripe/stripe-js"
+import { loadStripe } from "@stripe/stripe-js";
 import { toast } from 'sonner';
+import { RootState } from '@/redux/store';
 
 const Checkout = () => {
-  const cart = useSelector((state) => state.cart.items);
+  const cart = useSelector((state:RootState) => state.cart.items);
   const [userDetails, setUserDetails] = useState({
     name: '',
     email: '',
     phone: '',
     address: '',
   });
-  const [paymentMethod, setPaymentMethod] = useState('cod'); 
-  const [decreaseProductQuantity,] = useDecreaseProductQuantityMutation();
+  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [decreaseProductQuantity] = useDecreaseProductQuantityMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false); // Loading state
 
-
-  const handleInputChange = (e) => {
+  const handleInputChange = (e :React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserDetails((prevDetails) => ({
       ...prevDetails,
@@ -28,66 +29,65 @@ const Checkout = () => {
     }));
   };
 
+  const isFormValid = () => {
+    return userDetails.name && userDetails.email && userDetails.phone && userDetails.address; // Validate form
+  };
 
   const handlePlaceOrder = async () => {
+    if (!isFormValid()) {
+      toast.error("Please fill out all fields!"); // Alert if form is incomplete
+      return;
+    }
+
+    setLoading(true); // Start loading state
+
     if (paymentMethod === 'cod') {
       try {
         for (const item of cart) {
-          console.log(item);
-          await decreaseProductQuantity({id:item._id,quantity:item.quantity}).unwrap();
+          await decreaseProductQuantity({ id: item._id, quantity: item.quantity }).unwrap();
         }
         dispatch({ type: 'cart/clearCart' });
         navigate('/success');
+        toast.success('Your order confirmed')
       } catch (error) {
         console.error('Failed to decrease product quantity: ', error);
+        toast.error("Failed to process order.");
+      } finally {
+        setLoading(false); // End loading state
       }
     } else if (paymentMethod === 'stripe') {
-console.log("payment",paymentMethod )
       try {
-        const stripe = await loadStripe(
-          "pk_test_51NFUAjEsme57IV63aYt8tpTvOke8ZxsEw3eN2XiuTYopgXp8kRQ3c3thJoWrzG01vFDyq0vqJ9C4cpFRAl2vlfZY006wDbD92L"
-        );
-  
-        const body = {products: cart };
-        // console.log(body)
+        const stripe = await loadStripe("pk_test_51NFUAjEsme57IV63aYt8tpTvOke8ZxsEw3eN2XiuTYopgXp8kRQ3c3thJoWrzG01vFDyq0vqJ9C4cpFRAl2vlfZY006wDbD92L");
+        const body = { products: cart };
         const headers = { "content-type": "application/json" };
-  
-        const response = await fetch(
-          "https://mechanicalkeyboardserverside.vercel.app/api/create-checkout-session",
-          {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(body),
-          }
-        );
-  
+
+        const response = await fetch("https://mechanicalkeyboardserverside.vercel.app/api/create-checkout-session", {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(body),
+        });
+
         for (const item of cart) {
-          console.log(item);
-          await decreaseProductQuantity({id:item._id,quantity:item.quantity}).unwrap();
+          await decreaseProductQuantity({ id: item._id, quantity: item.quantity }).unwrap();
         }
         dispatch({ type: 'cart/clearCart' });
-        navigate('/success');
 
         if (!response.ok) {
           throw new Error("Failed to create checkout session");
         }
-  
+
         const session = await response.json();
-        const result = await stripe?.redirectToCheckout({
-          sessionId: session?.id,
-        });
-        console.log(result);
-  
+        const result = await stripe?.redirectToCheckout({ sessionId: session?.id });
+        toast.success('/Your order confirmed')
         if (result?.error) {
-          throw new Error(
-            result.error.message || "Failed to redirect to checkout"
-          );
+          throw new Error(result.error.message || "Failed to redirect to checkout");
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Stripe payment error:", error);
-        toast.error("Failed to process payment: " + error.message);
+        toast.error("Failed to process payment");
+      } finally {
+        setLoading(false); // End loading state
       }
-  
     }
   };
 
@@ -134,7 +134,6 @@ console.log("payment",paymentMethod )
         />
       </div>
 
-    
       <div className="mb-4">
         <h3 className="font-semibold mb-2">Select Payment Method:</h3>
         <label className="block mb-2">
@@ -152,17 +151,17 @@ console.log("payment",paymentMethod )
           <input
             type="radio"
             name="paymentMethod"
-            
             value="stripe"
             checked={paymentMethod === 'stripe'}
             onChange={(e) => setPaymentMethod(e.target.value)}
           />
-          <span  className="ml-2">Stripe</span>
+          <span className="ml-2">Stripe</span>
         </label>
       </div>
 
-      
-      <Button onClick={handlePlaceOrder}>Place Order</Button>
+      <Button className='rounded-full' onClick={handlePlaceOrder} disabled={loading}> {/* Disable button if loading */}
+        {loading ? 'Processing...' : 'Place Order'}
+      </Button>
     </div>
   );
 };
